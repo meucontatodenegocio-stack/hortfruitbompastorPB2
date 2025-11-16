@@ -5,17 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HostiFruit - Hortaliças Frescas</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background:#f3f3f3; }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f3f3; }
     header { background: #4caf50; padding: 20px; color: white; text-align: center; }
     .container { max-width: 900px; margin: auto; padding: 20px; }
+
+    /* Layout responsivo das categorias */
+    .categorias-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .categoria {
+      flex: 1 1 250px;
+      margin-bottom: 20px;
+      min-width: 220px;
+      text-align: center;
+    }
+    .produtos-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
     .produtos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-    .card { background: white; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
-    .card img {
-      width: 50%;
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       height: auto;
-      display: block;
-      margin: 0 auto;
+      min-height: 190px;
+      transition: transform 0.2s;
+    }
+    .card img {
+      width: 65%;
+      height: auto;
+      margin: 0 auto 8px auto;
       border-radius: 8px;
+      max-width: 150px;
     }
     .kg-indicador {
       font-size: 0.85em;
@@ -24,9 +57,7 @@
       margin-top: 4px;
       display: block;
     }
-    button { padding: 10px 15px; background: #4caf50; border: none; color: white; border-radius: 6px; cursor: pointer; }
-    #carrinho { background:white; padding:20px; border-radius:10px; margin-top:30px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-    #whatsappBtn { margin-top:20px; width:100%; }
+
     .quantidade-container {
       display: flex;
       align-items: center;
@@ -48,52 +79,59 @@
       text-align: center;
       font-weight: bold;
     }
-    @media (max-width: 600px) {
-      .produtos { flex-direction: column !important; }
-      header { padding: 15px; font-size: 14px; }
-      .card { padding: 100px; }
-      .card img { width: 10%; height: auto; }
-      .container { padding: 10px; }
-      h3 { font-size: 16px; }
-      button { padding: 8px 10px; font-size: 12px; }
-      #carrinho { padding: 10px; }
-      table th, table td { padding: 6px; font-size: 12px; }
-      div[style*="display:flex;"][style*="justify-content:space-between"] {
-        flex-direction: column !important;
-        gap: 10px !important;
-      }
+
+    button { 
+      padding: 10px 15px; 
+      background: #4caf50; 
+      border: none; 
+      color: white; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-size: 15px;
     }
-    .categorias-container {
-      display: flex !important;
-      flex-direction: row !important;
-      justify-content: space-between;
-      align-items: flex-start;
-      width: 100%;
-      gap: 20px;
+
+    #carrinho { 
+      background: white; 
+      padding: 20px; 
+      border-radius: 10px; 
+      margin-top: 30px; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+      overflow-x: auto;
     }
-    .categoria {
-      flex: 1;
-      text-align: center;
+    #whatsappBtn { margin-top: 20px; width: 100%; font-size: 16px; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px; font-size: 16px; }
+    td { border-bottom: 1px solid #ddd; }
+
+    /* Media queries para responsividade */
+    @media (max-width: 950px) {
+      .container { max-width: 100%; padding: 12px; }
+      .categorias-container { gap: 10px; }
     }
-    .produtos-col {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .card {
-      height:250px; /* altura fixa para todos os cards */
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      transform: scale(0.9);
-    }
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
       .categorias-container {
         flex-direction: column;
+        gap: 15px;
       }
-      .card {
-        transform: scale(1);
+      .categoria {
+        min-width: auto;
       }
+      .card img {
+        max-width: 120px;
+        width: 80%;
+      }
+    }
+    @media (max-width: 520px) {
+      header { padding: 10px 2px; font-size: 13px; }
+      .container { padding: 3px; }
+      h2 { font-size: 20px; }
+      h3 { font-size: 17px; }
+      .card { padding: 8px; min-height: 120px; }
+      .card img { max-width: 90px; }
+      button { padding: 7px 9px; font-size: 13px; }
+      #carrinho { padding: 8px; }
+      th, td { padding: 5px; font-size: 13px; }
     }
   </style>
 </head>
@@ -120,12 +158,12 @@
   </div>
   <div id="carrinho">
     <h2>Carrinho</h2>
-    <table id="listaCarrinho" style="width:100%;border-collapse:collapse;">
+    <table id="listaCarrinho">
       <thead>
         <tr>
-          <th style='text-align:left;padding:8px;'>Item</th>
-          <th style='text-align:center;padding:8px;'>Quantidade</th>
-          <th style='text-align:center;padding:8px;'>Ação</th>
+          <th style='text-align:left;'>Item</th>
+          <th style='text-align:center;'>Quantidade</th>
+          <th style='text-align:center;'>Ação</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -152,7 +190,6 @@ const whatsappBtn = document.getElementById('whatsappBtn');
 const barraPesquisa = document.getElementById('barraPesquisa');
 let carrinho = {};
 
-// Corrige modo de exibir nome nos cards e carrinho
 function renderProdutos() {
   const catLegumes = document.getElementById('catLegumes');
   const catVegetais = document.getElementById('catVegetais');
@@ -178,10 +215,9 @@ function renderProdutos() {
   });
 }
 
-// Salva só o nome puro como chave do carrinho
 function addCarrinho(index) {
   const produto = produtos[index];
-  const nomeBusca = produto.nome; // só texto puro para chave
+  const nomeBusca = produto.nome;
   if (carrinho[nomeBusca]) {
     carrinho[nomeBusca].quantidade++;
   } else {
@@ -211,21 +247,20 @@ function atualizarCarrinho() {
   const tabela = document.querySelector('#listaCarrinho tbody');
   tabela.innerHTML = '';
   Object.values(carrinho).forEach((item) => {
-    // Adiciona indicador "kg" só visualmente, sem HTML nos botões
     const nomeExibicao = item.vendidoPorPeso
       ? `${item.nome} <span class="kg-indicador">kg</span>`
       : item.nome;
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td style='padding:8px;border-bottom:1px solid #ddd;'>${nomeExibicao}</td>
-      <td style='padding:8px;border-bottom:1px solid #ddd; text-align:center;'>
+      <td>${nomeExibicao}</td>
+      <td>
         <div class="quantidade-container">
           <button onclick="alterarQuantidade('${item.nome}', -1)">−</button>
           <span>${item.quantidade}</span>
           <button onclick="alterarQuantidade('${item.nome}', 1)">+</button>
         </div>
       </td>
-      <td style='padding:8px;text-align:center;border-bottom:1px solid #ddd;'>
+      <td>
         <button onclick="removerItem('${item.nome}')" style='padding:5px 8px;font-size:12px;background:#e74c3c;color:white;border:none;border-radius:5px;cursor:pointer;'>X</button>
       </td>
     `;
@@ -240,7 +275,7 @@ whatsappBtn.addEventListener('click', () => {
   }
   let mensagem = 'Olá, gostaria de fazer um pedido:%0A%0A';
   Object.values(carrinho).forEach((item) => {
-    let nomeSemHtml = item.nome; // só nome puro
+    let nomeSemHtml = item.nome;
     mensagem += `- ${nomeSemHtml}${item.vendidoPorPeso ? " (kg)" : ""} (x${item.quantidade})%0A`;
   });
   const numero = '5522992905633';
