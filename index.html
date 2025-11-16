@@ -11,17 +11,18 @@
     .produtos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
     .card { background: white; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
     .card img {
-  width: 50%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  border-radius: 8px;
-}
+      width: 50%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 8px;
+    }
     .kg-indicador {
       font-size: 0.85em;
       color: #4caf50;
       font-weight: bold;
       margin-top: 4px;
+      display: block;
     }
     button { padding: 10px 15px; background: #4caf50; border: none; color: white; border-radius: 6px; cursor: pointer; }
     #carrinho { background:white; padding:20px; border-radius:10px; margin-top:30px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
@@ -80,12 +81,11 @@
       gap: 10px;
     }
     .card {
-      
       height:250px; /* altura fixa para todos os cards */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  transform: scale(0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transform: scale(0.9);
     }
     @media (max-width: 600px) {
       .categorias-container {
@@ -152,6 +152,7 @@ const whatsappBtn = document.getElementById('whatsappBtn');
 const barraPesquisa = document.getElementById('barraPesquisa');
 let carrinho = {};
 
+// Corrige modo de exibir nome nos cards e carrinho
 function renderProdutos() {
   const catLegumes = document.getElementById('catLegumes');
   const catVegetais = document.getElementById('catVegetais');
@@ -164,14 +165,11 @@ function renderProdutos() {
     .map((p, index) => ({ ...p, originalIndex: index }))
     .filter(p => p.nome.toLowerCase().includes(termoPesquisa));
   produtosFiltrados.forEach((p) => {
-    const nomeExibicao = p.vendidoPorPeso
-      ? `<span>${p.nome}</span><br><span class="kg-indicador">kg</span>`
-      : p.nome;
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
       <img loading="lazy" src="${p.imagem}" alt="${p.nome}" />
-      <h3>${nomeExibicao}</h3>
+      <h3>${p.nome}${p.vendidoPorPeso ? '<br><span class="kg-indicador">kg</span>' : ''}</h3>
       <button onclick="addCarrinho(${p.originalIndex})">Adicionar</button>
     `;
     if (p.categoria === "legumes") catLegumes.appendChild(card);
@@ -180,18 +178,14 @@ function renderProdutos() {
   });
 }
 
+// Salva só o nome puro como chave do carrinho
 function addCarrinho(index) {
   const produto = produtos[index];
-  let nomeExibicao;
-  if (produto.vendidoPorPeso) {
-    nomeExibicao = `${produto.nome} <span class="kg-indicador">kg</span>`;
+  const nomeBusca = produto.nome; // só texto puro para chave
+  if (carrinho[nomeBusca]) {
+    carrinho[nomeBusca].quantidade++;
   } else {
-    nomeExibicao = produto.nome;
-  }
-  if (carrinho[nomeExibicao]) {
-    carrinho[nomeExibicao].quantidade++;
-  } else {
-    carrinho[nomeExibicao] = { ...produto, quantidade: 1, nomeExibicao };
+    carrinho[nomeBusca] = { ...produto, quantidade: 1 };
   }
   atualizarCarrinho();
 }
@@ -206,33 +200,37 @@ function alterarQuantidade(nome, delta) {
   }
 }
 
-function atualizarCarrinho() {
-  const tabela = document.querySelector('#listaCarrinho tbody');
-  tabela.innerHTML = '';
-  Object.values(carrinho).forEach((item) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td style='padding:8px;border-bottom:1px solid #ddd;'>${item.nomeExibicao}</td>
-      <td style='padding:8px;border-bottom:1px solid #ddd; text-align:center;'>
-        <div class="quantidade-container">
-          <button onclick="alterarQuantidade('${item.nomeExibicao}', -1)">−</button>
-          <span>${item.quantidade}</span>
-          <button onclick="alterarQuantidade('${item.nomeExibicao}', 1)">+</button>
-        </div>
-      </td>
-      <td style='padding:8px;text-align:center;border-bottom:1px solid #ddd;'>
-        <button onclick="removerItem('${item.nomeExibicao}')" style='padding:5px 8px;font-size:12px;background:#e74c3c;color:white;border:none;border-radius:5px;cursor:pointer;'>X</button>
-      </td>
-    `;
-    tabela.appendChild(tr);
-  });
-}
-
 function removerItem(nome) {
   if (carrinho[nome]) {
     delete carrinho[nome];
     atualizarCarrinho();
   }
+}
+
+function atualizarCarrinho() {
+  const tabela = document.querySelector('#listaCarrinho tbody');
+  tabela.innerHTML = '';
+  Object.values(carrinho).forEach((item) => {
+    // Adiciona indicador "kg" só visualmente, sem HTML nos botões
+    const nomeExibicao = item.vendidoPorPeso
+      ? `${item.nome} <span class="kg-indicador">kg</span>`
+      : item.nome;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style='padding:8px;border-bottom:1px solid #ddd;'>${nomeExibicao}</td>
+      <td style='padding:8px;border-bottom:1px solid #ddd; text-align:center;'>
+        <div class="quantidade-container">
+          <button onclick="alterarQuantidade('${item.nome}', -1)">−</button>
+          <span>${item.quantidade}</span>
+          <button onclick="alterarQuantidade('${item.nome}', 1)">+</button>
+        </div>
+      </td>
+      <td style='padding:8px;text-align:center;border-bottom:1px solid #ddd;'>
+        <button onclick="removerItem('${item.nome}')" style='padding:5px 8px;font-size:12px;background:#e74c3c;color:white;border:none;border-radius:5px;cursor:pointer;'>X</button>
+      </td>
+    `;
+    tabela.appendChild(tr);
+  });
 }
 
 whatsappBtn.addEventListener('click', () => {
@@ -242,8 +240,8 @@ whatsappBtn.addEventListener('click', () => {
   }
   let mensagem = 'Olá, gostaria de fazer um pedido:%0A%0A';
   Object.values(carrinho).forEach((item) => {
-    let nomeSemHtml = item.nomeExibicao.replace(/<[^>]*>?/gm, ''); // Remove tags HTML para WhatsApp
-    mensagem += `- ${nomeSemHtml} (x${item.quantidade})%0A`;
+    let nomeSemHtml = item.nome; // só nome puro
+    mensagem += `- ${nomeSemHtml}${item.vendidoPorPeso ? " (kg)" : ""} (x${item.quantidade})%0A`;
   });
   const numero = '5522992905633';
   const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
