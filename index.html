@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HostiFruit - Hortaliças Frescas</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background:#f3f3f3; }
+    header { background: #4caf50; padding: 20px; color: white; text-align: center; }
+    .container { max-width: 900px; margin: auto; padding: 20px; }
+    .produtos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .card { background: white; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+    .card img {
+  width: 50%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+    .kg-indicador {
+      font-size: 0.85em;
+      color: #4caf50;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+    button { padding: 10px 15px; background: #4caf50; border: none; color: white; border-radius: 6px; cursor: pointer; }
+    #carrinho { background:white; padding:20px; border-radius:10px; margin-top:30px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+    #whatsappBtn { margin-top:20px; width:100%; }
+    .quantidade-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .quantidade-container button {
+      background-color: #4caf50;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .quantidade-container span {
+      min-width: 24px;
+      text-align: center;
+      font-weight: bold;
+    }
+    @media (max-width: 600px) {
+      .produtos { flex-direction: column !important; }
+      header { padding: 15px; font-size: 14px; }
+      .card { padding: 100px; }
+      .card img { width: 10%; height: auto; }
+      .container { padding: 10px; }
+      h3 { font-size: 16px; }
+      button { padding: 8px 10px; font-size: 12px; }
+      #carrinho { padding: 10px; }
+      table th, table td { padding: 6px; font-size: 12px; }
+      div[style*="display:flex;"][style*="justify-content:space-between"] {
+        flex-direction: column !important;
+        gap: 10px !important;
+      }
+    }
+    .categorias-container {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 100%;
+      gap: 20px;
+    }
+    .categoria {
+      flex: 1;
+      text-align: center;
+    }
+    .produtos-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .card {
+      
+      height:250px; /* altura fixa para todos os cards */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transform: scale(0.9);
+    }
+    @media (max-width: 600px) {
+      .categorias-container {
+        flex-direction: column;
+      }
+      .card {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>HostiFruit - Hortaliças Frescas</h1>
+</header>
+<div class="container">
+  <h2>Produtos</h2>
+  <input type="text" id="barraPesquisa" placeholder=" Buscar produto..." style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box;">
+  <div class="categorias-container">
+    <div class="categoria">
+      <h3>Legumes</h3>
+      <div class="produtos-col" id="catLegumes"></div>
+    </div>
+    <div class="categoria">
+      <h3>Vegetais</h3>
+      <div class="produtos-col" id="catVegetais"></div>
+    </div>
+    <div class="categoria">
+      <h3>Frutas</h3>
+      <div class="produtos-col" id="catFrutas"></div>
+    </div>
+  </div>
+  <div id="carrinho">
+    <h2>Carrinho</h2>
+    <table id="listaCarrinho" style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th style='text-align:left;padding:8px;'>Item</th>
+          <th style='text-align:center;padding:8px;'>Quantidade</th>
+          <th style='text-align:center;padding:8px;'>Ação</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button id="whatsappBtn">Enviar pedido para o WhatsApp</button>
+  </div>
+</div>
+<script>
+const produtos = [
+  { nome: "Alface", preco: 3.50, imagem: "https://cdn.pixabay.com/photo/2018/06/29/07/26/salad-3505392_1280.jpg", categoria: "vegetais", vendidoPorPeso: false },
+  { nome: "Cenoura", preco: 4.20, imagem: "https://cdn.pixabay.com/photo/2016/09/25/16/34/carrots-1694087_1280.jpg", categoria: "legumes", vendidoPorPeso: true },
+  { nome: "Tomate", preco: 6.00, imagem: "https://cdn.pixabay.com/photo/2021/09/06/13/21/cherry-tomatoes-6601705_960_720.jpg", categoria: "vegetais", vendidoPorPeso: true },
+  { nome: "Couve", preco: 2.80, imagem: " https://cdn.pixabay.com/photo/2017/04/04/17/58/vegetables-2202487_960_720.jpg", categoria: "vegetais", vendidoPorPeso: false },
+  { nome: "Maçã", preco: 5.00, imagem: "https://cdn.pixabay.com/photo/2023/09/02/03/14/fuji-apple-8228073_1280.jpg", categoria: "frutas", vendidoPorPeso: true },
+  { nome: "Banana", preco: 4.00, imagem: "https://cdn.pixabay.com/photo/2011/03/24/10/12/banana-5734_1280.jpg", categoria: "frutas", vendidoPorPeso: true },
+  { nome: "Melão", preco: 7.50, imagem: "https://cdn.pixabay.com/photo/2014/07/14/12/11/melon-393065_1280.jpg", categoria: "frutas", vendidoPorPeso: false },
+  { nome: "Melancia", preco: 9.90, imagem: "https://cdn.pixabay.com/photo/2013/01/08/01/25/watermelon-74342_1280.jpg", categoria: "frutas", vendidoPorPeso: true },
+  { nome: "Batata", preco: 3.80, imagem: "https://cdn.pixabay.com/photo/2016/08/11/08/49/potatoes-1585075_1280.jpg", categoria: "legumes", vendidoPorPeso: true },
+  { nome: "Inhame", preco: 5.20, imagem: "https://cdn.pixabay.com/photo/2017/10/07/09/44/taro-root-2825925_1280.jpg", categoria: "legumes", vendidoPorPeso: true }
+];
+
+const listaCarrinho = document.getElementById('listaCarrinho');
+const whatsappBtn = document.getElementById('whatsappBtn');
+const barraPesquisa = document.getElementById('barraPesquisa');
+let carrinho = {};
+
+function renderProdutos() {
+  const catLegumes = document.getElementById('catLegumes');
+  const catVegetais = document.getElementById('catVegetais');
+  const catFrutas = document.getElementById('catFrutas');
+  catLegumes.innerHTML = '';
+  catVegetais.innerHTML = '';
+  catFrutas.innerHTML = '';
+  const termoPesquisa = barraPesquisa.value.toLowerCase();
+  const produtosFiltrados = produtos
+    .map((p, index) => ({ ...p, originalIndex: index }))
+    .filter(p => p.nome.toLowerCase().includes(termoPesquisa));
+  produtosFiltrados.forEach((p) => {
+    const nomeExibicao = p.vendidoPorPeso
+      ? `<span>${p.nome}</span><br><span class="kg-indicador">kg</span>`
+      : p.nome;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img loading="lazy" src="${p.imagem}" alt="${p.nome}" />
+      <h3>${nomeExibicao}</h3>
+      <button onclick="addCarrinho(${p.originalIndex})">Adicionar</button>
+    `;
+    if (p.categoria === "legumes") catLegumes.appendChild(card);
+    if (p.categoria === "vegetais") catVegetais.appendChild(card);
+    if (p.categoria === "frutas") catFrutas.appendChild(card);
+  });
+}
+
+function addCarrinho(index) {
+  const produto = produtos[index];
+  let nomeExibicao;
+  if (produto.vendidoPorPeso) {
+    nomeExibicao = `${produto.nome} <span class="kg-indicador">kg</span>`;
+  } else {
+    nomeExibicao = produto.nome;
+  }
+  if (carrinho[nomeExibicao]) {
+    carrinho[nomeExibicao].quantidade++;
+  } else {
+    carrinho[nomeExibicao] = { ...produto, quantidade: 1, nomeExibicao };
+  }
+  atualizarCarrinho();
+}
+
+function alterarQuantidade(nome, delta) {
+  if (carrinho[nome]) {
+    const novaQtd = carrinho[nome].quantidade + delta;
+    if (novaQtd >= 1) {
+      carrinho[nome].quantidade = novaQtd;
+      atualizarCarrinho();
+    }
+  }
+}
+
+function atualizarCarrinho() {
+  const tabela = document.querySelector('#listaCarrinho tbody');
+  tabela.innerHTML = '';
+  Object.values(carrinho).forEach((item) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style='padding:8px;border-bottom:1px solid #ddd;'>${item.nomeExibicao}</td>
+      <td style='padding:8px;border-bottom:1px solid #ddd; text-align:center;'>
+        <div class="quantidade-container">
+          <button onclick="alterarQuantidade('${item.nomeExibicao}', -1)">−</button>
+          <span>${item.quantidade}</span>
+          <button onclick="alterarQuantidade('${item.nomeExibicao}', 1)">+</button>
+        </div>
+      </td>
+      <td style='padding:8px;text-align:center;border-bottom:1px solid #ddd;'>
+        <button onclick="removerItem('${item.nomeExibicao}')" style='padding:5px 8px;font-size:12px;background:#e74c3c;color:white;border:none;border-radius:5px;cursor:pointer;'>X</button>
+      </td>
+    `;
+    tabela.appendChild(tr);
+  });
+}
+
+function removerItem(nome) {
+  if (carrinho[nome]) {
+    delete carrinho[nome];
+    atualizarCarrinho();
+  }
+}
+
+whatsappBtn.addEventListener('click', () => {
+  if (Object.keys(carrinho).length === 0) {
+    alert('Carrinho está vazio!');
+    return;
+  }
+  let mensagem = 'Olá, gostaria de fazer um pedido:%0A%0A';
+  Object.values(carrinho).forEach((item) => {
+    let nomeSemHtml = item.nomeExibicao.replace(/<[^>]*>?/gm, ''); // Remove tags HTML para WhatsApp
+    mensagem += `- ${nomeSemHtml} (x${item.quantidade})%0A`;
+  });
+  const numero = '5522992905633';
+  const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+  window.open(url, '_blank');
+});
+
+barraPesquisa.addEventListener('input', renderProdutos);
+renderProdutos();
+</script>
+</body>
+</html>
