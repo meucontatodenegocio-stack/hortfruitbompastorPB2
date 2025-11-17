@@ -128,17 +128,20 @@
         width: 80%;
       }
     }
-    @media (max-width: 520px) {
-      header { padding: 10px 2px; font-size: 13px; }
-      .container { padding: 3px; }
-      h2 { font-size: 20px; }
-      h3 { font-size: 17px; }
-      .card { padding: 8px; min-height: 120px; }
-      .card img { max-width: 90px; }
-      button { padding: 7px 9px; font-size: 13px; }
-      #carrinho { padding: 8px; }
-      th, td { padding: 5px; font-size: 13px; }
-    }
+    @media (max-width: 700px) {
+  .categorias-container {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    gap: 10px;
+  }
+  .categoria {
+    flex: 0 0 80vw; /* cada categoria pega 80% da largura da viewport */
+    min-width: 220px;
+    max-width: 300px;
+    margin-bottom: 10px;
+  }
+}
   </style>
 </head>
 <body>
