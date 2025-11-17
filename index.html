@@ -8,6 +8,7 @@
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f3f3; }
     header { background: #4caf50; padding: 20px; color: white; text-align: center; }
     .container { max-width: 900px; margin: auto; padding: 20px; }
+
     .categorias-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -46,6 +47,7 @@
       width: 100%;
       max-width: 200px;
       margin: 0 auto;
+      box-sizing: border-box;
     }
     .card img {
       width: 65%;
@@ -76,7 +78,6 @@
       text-align: center;
       font-weight: bold;
     }
-
     button { 
       padding: 10px 15px; 
       background: #4caf50; 
@@ -86,7 +87,6 @@
       cursor: pointer; 
       font-size: 15px;
     }
-
     #carrinho { 
       background: white; 
       padding: 20px; 
@@ -96,23 +96,42 @@
       overflow-x: auto;
     }
     #whatsappBtn { margin-top: 20px; width: 100%; font-size: 16px; }
-
     table { width: 100%; border-collapse: collapse; }
     th, td { padding: 8px; font-size: 16px; }
     td { border-bottom: 1px solid #ddd; }
 
+    /* Responsivo para até 700px */
     @media (max-width: 700px) {
-      .container { max-width: 100%; padding: 12px; }
-      .categorias-grid { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-      .produtos-col { gap: 7px; }
-      .card { padding: 10px; max-width: 140px;}
+      .container { max-width: 100%; padding: 8px; }
+      .categorias-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 4px;
+      }
+      .produtos-col { gap: 6px; }
+      .card {
+        max-width: none;
+        min-width: 0;
+        padding: 7px 3px;
+        font-size: 1em;
+        box-sizing: border-box;
+        width: 100%;
+        margin: 0;
+      }
       .titulo-categoria { font-size: 1em; }
     }
     @media (max-width: 520px) {
-      header { padding: 10px 2px; font-size: 13px; }
       .container { padding: 3px; }
-      h2 { font-size: 20px; }
-      .card { padding: 7px; font-size: 0.95em; max-width: 120px;}
+      .categorias-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 2px;
+      }
+      .card {
+        padding: 6px 1px;
+        font-size: 0.94em;
+        box-sizing: border-box;
+        width: 100%;
+        margin: 0;
+      }
       .titulo-categoria { font-size: 0.98em; }
       th, td { padding: 5px; font-size: 13px; }
     }
