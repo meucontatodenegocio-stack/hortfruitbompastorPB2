@@ -279,10 +279,9 @@ whatsappBtn.addEventListener('click', () => {
     alert('Carrinho está vazio!');
     return;
   }
-  let mensagem = 'Olá, gostaria de fazer um pedido:%0A%0A';
+  let mensagem = 'Olá, gostaria de fazer um pedido:\n\n';
   Object.values(carrinho).forEach((item) => {
-    let nomeSemHtml = item.nome;
-    mensagem += `- ${nomeSemHtml} (x${item.quantidade})%0A`;
+    mensagem += `- ${item.nome} (x${item.quantidade})\n`;
   });
   const numero = '5522992905633';
   const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
