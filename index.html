@@ -15,18 +15,22 @@
       flex-direction: row;
       justify-content: space-between;
       gap: 20px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap; /* impede quebra, tudo na linha */
     }
     .categoria {
-      flex: 1 1 250px;
+      flex: 1 1 30%; /* cada categoria com largura de cerca 1/3 */
       margin-bottom: 20px;
-      min-width: 220px;
+      min-width: 0;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .produtos-col {
       display: flex;
       flex-direction: column;
       gap: 10px;
+      width: 100%;
     }
     .produtos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 
@@ -107,7 +111,8 @@
     /* Media queries para responsividade */
     @media (max-width: 950px) {
       .container { max-width: 100%; padding: 12px; }
-      .categorias-container { gap: 10px; }
+      .categorias-container { gap: 10px; flex-wrap: wrap; }
+      .categoria { flex: 1 1 45%; }
     }
     @media (max-width: 700px) {
       .categorias-container {
@@ -116,6 +121,7 @@
       }
       .categoria {
         min-width: auto;
+        width: 100%;
       }
       .card img {
         max-width: 120px;
