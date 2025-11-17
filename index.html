@@ -262,7 +262,7 @@ function atualizarCarrinho() {
   const tabela = document.querySelector('#listaCarrinho tbody');
   tabela.innerHTML = '';
   Object.values(carrinho).forEach((item) => {
-    const nomeExibicao = item.nome;
+    const nomeExibicao = `${item.nome} (${item.unidade || ''})`;
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${nomeExibicao}</td>
