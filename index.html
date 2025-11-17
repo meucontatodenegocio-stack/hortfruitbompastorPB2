@@ -282,7 +282,7 @@ whatsappBtn.addEventListener('click', () => {
   let mensagem = 'Olá, gostaria de fazer um pedido:%0A%0A';
   Object.values(carrinho).forEach((item) => {
     let nomeSemHtml = item.nome;
-    mensagem += `- ${nomeSemHtml}${item.vendidoPorPeso ? " (kg)" : ""} (x${item.quantidade})%0A`;
+    mensagem += `- ${nomeSemHtml} (x${item.quantidade})%0A`;
   });
   const numero = '5522992905633';
   const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
