@@ -49,11 +49,12 @@
       box-sizing: border-box;
     }
     .card img {
-      width: 65%;
+      width: auto;
+      max-width: 120px;
       height: auto;
-      margin: 0 auto 8px auto;
-      border-radius: 8px;
-      max-width: 150px;
+      border-radius: 12px;
+      margin: 0 auto 10px auto;
+      display: block;
     }
     .unidade-indicador {
       font-size: 0.97em;
@@ -143,7 +144,7 @@
 </head>
 <body>
 <header>
-  <img src="Bom_Pastor_HORTIFRUTI.png" alt="Logo do Bom Pastor Hortifruti" style="max-width:220px; width:100%; display:block; margin:0 auto 10px auto; border-radius:12px;">
+  <img src="Bom-Pastor-HORTIFRUTI.jpg" alt="Logo do Bom Pastor Hortifruti" style="max-width:220px; width:100%; display:block; margin:0 auto 10px auto; border-radius:12px;">
 </header>
 <div class="container">
   <h2>Produtos</h2>
@@ -179,16 +180,16 @@
 </div>
 <script>
 const produtos = [
-  { nome: "Cenoura", preco: 4.20, imagem: "https://cdn.pixabay.com/photo/2016/09/25/16/34/carrots-1694087_1280.jpg", categoria: "legumes", vendidoPorPeso: true, unidade: "kg" },
-  { nome: "Inhame", preco: 5.20, imagem: "https://cdn.pixabay.com/photo/2017/10/07/09/44/taro-root-2825925_1280.jpg", categoria: "legumes", vendidoPorPeso: true, unidade: "kg" },
-  { nome: "Batata", preco: 3.80, imagem: "https://cdn.pixabay.com/photo/2016/08/11/08/49/potatoes-1585075_1280.jpg", categoria: "legumes", vendidoPorPeso: true, unidade: "kg" },
-  { nome: "Alface", preco: 3.50, imagem: "https://cdn.pixabay.com/photo/2018/06/29/07/26/salad-3505392_1280.jpg", categoria: "vegetais", vendidoPorPeso: false, unidade: "unidade" },
-  { nome: "Tomate", preco: 6.00, imagem: "https://cdn.pixabay.com/photo/2021/09/06/13/21/cherry-tomatoes-6601705_960_720.jpg", categoria: "vegetais", vendidoPorPeso: true, unidade: "kg" },
-  { nome: "Couve", preco: 2.80, imagem: "https://cdn.pixabay.com/photo/2017/04/04/17/58/vegetables-2202487_960_720.jpg", categoria: "vegetais", vendidoPorPeso: false, unidade: "unidade" },
-  { nome: "Maçã", preco: 5.00, imagem: "https://cdn.pixabay.com/photo/2023/09/02/03/14/fuji-apple-8228073_1280.jpg", categoria: "frutas", vendidoPorPeso: true, unidade: "kg" },
-  { nome: "Banana", preco: 4.00, imagem: "https://cdn.pixabay.com/photo/2016/09/03/20/48/bananas-1642706_1280.jpg", categoria: "frutas", vendidoPorPeso: true, unidade: "kg" },
-  { nome: "Melão", preco: 7.50, imagem: "https://cdn.pixabay.com/photo/2021/04/19/11/05/melon-6191133_1280.jpg", categoria: "frutas", vendidoPorPeso: false, unidade: "unidade" },
-  { nome: "Melancia", preco: 9.90, imagem: "https://cdn.pixabay.com/photo/2015/12/05/00/06/watermelon-1077677_1280.jpg", categoria: "frutas", vendidoPorPeso: true, unidade: "kg" }
+  { nome: "Cenoura", preco: 4.20, imagem: "cenoura.jpg", categoria: "legumes", vendidoPorPeso: true, unidade: "kg" },
+  { nome: "Inhame", preco: 5.20, imagem: "inhame.jpg", categoria: "legumes", vendidoPorPeso: true, unidade: "kg" },
+  { nome: "Batata", preco: 3.80, imagem: "batata.jpg", categoria: "legumes", vendidoPorPeso: true, unidade: "kg" },
+  { nome: "Alface", preco: 3.50, imagem: "alface.jpg", categoria: "vegetais", vendidoPorPeso: false, unidade: "unidade" },
+  { nome: "Tomate", preco: 6.00, imagem: "tomate.jpg", categoria: "vegetais", vendidoPorPeso: true, unidade: "kg" },
+  { nome: "Couve", preco: 2.80, imagem: "couve.jpg", categoria: "vegetais", vendidoPorPeso: false, unidade: "unidade" },
+  { nome: "Maçã", preco: 5.00, imagem: "maca.jpg", categoria: "frutas", vendidoPorPeso: true, unidade: "kg" },
+  { nome: "Banana", preco: 4.00, imagem: "banana.jpg", categoria: "frutas", vendidoPorPeso: true, unidade: "kg" },
+  { nome: "Melão", preco: 7.50, imagem: "melao.jpg", categoria: "frutas", vendidoPorPeso: false, unidade: "unidade" },
+  { nome: "Melancia", preco: 9.90, imagem: "melancia.jpg", categoria: "frutas", vendidoPorPeso: true, unidade: "kg" }
 ];
 
 const listaCarrinho = document.getElementById('listaCarrinho');
