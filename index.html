@@ -8,30 +8,30 @@
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f3f3; }
     header { background: #4caf50; padding: 20px; color: white; text-align: center; }
     .container { max-width: 900px; margin: auto; padding: 20px; }
-
-    .categorias-container {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: nowrap;
+    .categorias-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      align-items: flex-start;
+      width: 100%;
+      margin-bottom: 20px;
     }
     .categoria {
-      flex: 1 1 0px;
-      min-width: 260px;
-      max-width: 320px;
       background: transparent;
-      box-sizing: border-box;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    }
+    .titulo-categoria {
+      font-size: 1.30em;
+      font-weight: bold;
+      margin-bottom: 8px;
+      margin-top: 0;
     }
     .produtos-col {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 14px;
       width: 100%;
+      align-items: center;
     }
     .card {
       background: white;
@@ -41,9 +41,11 @@
       text-align: center;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      min-height: 190px;
-      transition: transform 0.2s;
+      align-items: center;
+      min-width: 0;
+      width: 100%;
+      max-width: 200px;
+      margin: 0 auto;
     }
     .card img {
       width: 65%;
@@ -52,13 +54,7 @@
       border-radius: 8px;
       max-width: 150px;
     }
-    .kg-indicador {
-      font-size: 0.85em;
-      color: #4caf50;
-      font-weight: bold;
-      margin-top: 4px;
-      display: block;
-    }
+
     .quantidade-container {
       display: flex;
       align-items: center;
@@ -80,6 +76,7 @@
       text-align: center;
       font-weight: bold;
     }
+
     button { 
       padding: 10px 15px; 
       background: #4caf50; 
@@ -89,6 +86,7 @@
       cursor: pointer; 
       font-size: 15px;
     }
+
     #carrinho { 
       background: white; 
       padding: 20px; 
@@ -98,45 +96,26 @@
       overflow-x: auto;
     }
     #whatsappBtn { margin-top: 20px; width: 100%; font-size: 16px; }
+
     table { width: 100%; border-collapse: collapse; }
     th, td { padding: 8px; font-size: 16px; }
     td { border-bottom: 1px solid #ddd; }
 
-    /* NOVA REGRA PARA CELULAR */
     @media (max-width: 700px) {
-  .categorias-container {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 4px;
-  }
-  .categoria {
-    flex: 1 1 0px;
-    min-width: 0;
-    max-width: 100vw;
-    margin-bottom: 0;
-    padding: 0 3px;
-  }
-  .produtos-col {
-    gap: 8px;
-  }
-  .card {
-    min-width: 0;
-    padding: 7px;
-    min-height: 80px;
-  }
-  .card img {
-    max-width: 70px;
-  }
-}
-@media (max-width: 520px) {
-  .categoria {
-    padding: 0 2px;
-  }
-  .card {
-    padding: 5px;
-    min-height: 60px;
-  }
-}
+      .container { max-width: 100%; padding: 12px; }
+      .categorias-grid { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+      .produtos-col { gap: 7px; }
+      .card { padding: 10px; max-width: 140px;}
+      .titulo-categoria { font-size: 1em; }
+    }
+    @media (max-width: 520px) {
+      header { padding: 10px 2px; font-size: 13px; }
+      .container { padding: 3px; }
+      h2 { font-size: 20px; }
+      .card { padding: 7px; font-size: 0.95em; max-width: 120px;}
+      .titulo-categoria { font-size: 0.98em; }
+      th, td { padding: 5px; font-size: 13px; }
+    }
   </style>
 </head>
 <body>
@@ -146,17 +125,17 @@
 <div class="container">
   <h2>Produtos</h2>
   <input type="text" id="barraPesquisa" placeholder=" Buscar produto..." style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box;">
-  <div class="categorias-container">
+  <div class="categorias-grid">
     <div class="categoria">
-      <h3>Legumes</h3>
+      <div class="titulo-categoria">Legumes</div>
       <div class="produtos-col" id="catLegumes"></div>
     </div>
     <div class="categoria">
-      <h3>Vegetais</h3>
+      <div class="titulo-categoria">Vegetais</div>
       <div class="produtos-col" id="catVegetais"></div>
     </div>
     <div class="categoria">
-      <h3>Frutas</h3>
+      <div class="titulo-categoria">Frutas</div>
       <div class="produtos-col" id="catFrutas"></div>
     </div>
   </div>
@@ -195,28 +174,34 @@ const barraPesquisa = document.getElementById('barraPesquisa');
 let carrinho = {};
 
 function renderProdutos() {
+  let legumesProd = [];
+  let vegetaisProd = [];
+  let frutasProd = [];
+  const termoPesquisa = barraPesquisa.value.toLowerCase();
+  produtos
+    .map((p, index) => ({ ...p, originalIndex: index }))
+    .filter(p => p.nome.toLowerCase().includes(termoPesquisa))
+    .forEach((p) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img loading="lazy" src="${p.imagem}" alt="${p.nome}" />
+        <h3>${p.nome}</h3>
+        <button onclick="addCarrinho(${p.originalIndex})">Adicionar</button>
+      `;
+      if (p.categoria === "legumes") legumesProd.push(card);
+      if (p.categoria === "vegetais") vegetaisProd.push(card);
+      if (p.categoria === "frutas") frutasProd.push(card);
+    });
   const catLegumes = document.getElementById('catLegumes');
   const catVegetais = document.getElementById('catVegetais');
   const catFrutas = document.getElementById('catFrutas');
   catLegumes.innerHTML = '';
   catVegetais.innerHTML = '';
   catFrutas.innerHTML = '';
-  const termoPesquisa = barraPesquisa.value.toLowerCase();
-  const produtosFiltrados = produtos
-    .map((p, index) => ({ ...p, originalIndex: index }))
-    .filter(p => p.nome.toLowerCase().includes(termoPesquisa));
-  produtosFiltrados.forEach((p) => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <img loading="lazy" src="${p.imagem}" alt="${p.nome}" />
-      <h3>${p.nome}${p.vendidoPorPeso ? '<br><span class="kg-indicador">kg</span>' : ''}</h3>
-      <button onclick="addCarrinho(${p.originalIndex})">Adicionar</button>
-    `;
-    if (p.categoria === "legumes") catLegumes.appendChild(card);
-    if (p.categoria === "vegetais") catVegetais.appendChild(card);
-    if (p.categoria === "frutas") catFrutas.appendChild(card);
-  });
+  legumesProd.forEach(e => catLegumes.appendChild(e));
+  vegetaisProd.forEach(e => catVegetais.appendChild(e));
+  frutasProd.forEach(e => catFrutas.appendChild(e));
 }
 
 function addCarrinho(index) {
@@ -251,9 +236,7 @@ function atualizarCarrinho() {
   const tabela = document.querySelector('#listaCarrinho tbody');
   tabela.innerHTML = '';
   Object.values(carrinho).forEach((item) => {
-    const nomeExibicao = item.vendidoPorPeso
-      ? `${item.nome} <span class="kg-indicador">kg</span>`
-      : item.nome;
+    const nomeExibicao = item.nome;
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${nomeExibicao}</td>
