@@ -238,17 +238,17 @@
     <tbody></tbody>
   </table>
   <div id="enderecoEntrega">
-    <h3>Endereço de Entrega</h3>
-    <label for="inputNome">Nome:</label>
-    <input type="text" id="inputNome" placeholder="Nome completo">
-    <label for="inputEndereco">Endereço:</label>
-    <input type="text" id="inputEndereco" placeholder="Rua, avenida, etc.">
-    <label for="inputNumero">Número:</label>
-    <input type="text" id="inputNumero" placeholder="Número">
-    <label for="inputBairro">Bairro:</label>
-    <input type="text" id="inputBairro" placeholder="Bairro">
-  </div>
-  <button id="whatsappBtn">Enviar pedido para o WhatsApp</button>
+  <h3>Endereço de Entrega</h3>
+  <label for="inputNome">Nome:</label>
+  <input type="text" id="inputNome" placeholder="Nome completo">
+  <label for="inputTelefone">Telefone:</label>
+  <input type="text" id="inputTelefone" placeholder="(XX) XXXXX-XXXX">
+  <label for="inputEndereco">Endereço:</label>
+  <input type="text" id="inputEndereco" placeholder="Rua, avenida, etc.">
+  <label for="inputNumero">Número:</label>
+  <input type="text" id="inputNumero" placeholder="Número">
+  <label for="inputBairro">Bairro:</label>
+  <input type="text" id="inputBairro" placeholder="Bairro">
 </div>
 
 <footer style="text-align: center; padding: 15px 0; font-size: 12px; color: #555;">
@@ -410,7 +410,7 @@ whatsappBtn.addEventListener('click', () => {
   Object.values(carrinho).forEach(item => {
     mensagem += `- ${item.nome} (${item.unidade}) (x${item.quantidade})\n`;
   });
-  mensagem += `Nome: ${nome}\nRua/Avenida: ${endereco}\nNúmero: ${numero}\nBairro: ${bairro}`;
+  mensagem += `Nome: ${nome}\nTelefone: ${telefone}\nRua/Avenida: ${endereco}\nNúmero: ${numero}\nBairro: ${bairro}`;
 
   const phoneNumber = '5522992905633';
   const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(mensagem)}`;
