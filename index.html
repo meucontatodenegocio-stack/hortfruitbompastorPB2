@@ -239,6 +239,10 @@
   </table>
   <div id="enderecoEntrega">
     <h3>Endereço de Entrega</h3>
+    <label for="inputNome">Nome:</label>
+    <input type="text" id="inputNome" placeholder="Nome completo">
+    <label for="inputTelefone">Telefone:</label>
+    <input type="text" id="inputNome" placeholder="(22)Telefone)">
     <label for="inputEndereco">Endereço:</label>
     <input type="text" id="inputEndereco" placeholder="Rua, avenida, etc.">
     <label for="inputNumero">Número:</label>
@@ -393,20 +397,22 @@ whatsappBtn.addEventListener('click', () => {
     alert('Carrinho está vazio!');
     return;
   }
+  const nome = document.getElementById('inputNome').value.trim();
+  const telefone = document.getElementById('inputTelefone').value.trim();
   const endereco = document.getElementById('inputEndereco').value.trim();
   const numero = document.getElementById('inputNumero').value.trim();
   const bairro = document.getElementById('inputBairro').value.trim();
 
-  if (!endereco || !numero || !bairro) {
-    alert('Por favor, preencha o endereço, número e bairro para entrega.');
-    return;
-  }
+  if (!telefone ||!nome || !endereco || !numero || !bairro) {
+  alert('Por favor, preencha o nome, telefone, endereço, número e bairro para entrega.');
+  return;
+}
 
   let mensagem = 'Olá, gostaria de fazer um pedido:\n\n';
   Object.values(carrinho).forEach(item => {
     mensagem += `- ${item.nome} (${item.unidade}) (x${item.quantidade})\n`;
   });
-  mensagem += `\nEndereço de entrega:\nRua/Avenida: ${endereco}\nNúmero: ${numero}\nBairro: ${bairro}`;
+  mensagem += `\nTelefone: ${telefone}\nNome: ${nome}\nEndereço de entrega:\nRua/Avenida: ${endereco}\nNúmero: ${numero}\nBairro: ${bairro}`;
 
   const phoneNumber = '5522992905633';
   const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(mensagem)}`;
