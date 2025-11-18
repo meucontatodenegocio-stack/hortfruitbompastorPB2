@@ -2,36 +2,43 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bom Pastor HORTIFRUTI</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f3f3; }
     header { background: #4caf50; padding: 20px; text-align: center; }
     .container { max-width: 900px; margin: auto; padding: 20px; }
-    .categorias-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 14px;
-      align-items: flex-start;
-      width: 100%;
-      margin-bottom: 20px;
-    }
-    .categoria {
-      background: transparent;
-      text-align: center;
-    }
-    .titulo-categoria {
-      font-size: 1.30em;
-      font-weight: bold;
-      margin-bottom: 8px;
-      margin-top: 0;
-    }
-    .produtos-col {
+    .categorias-botoes {
       display: flex;
-      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .categoria-btn {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 14px 35px;
+      font-size: 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      white-space: nowrap;
+      min-width: 100px;
+    }
+    .categoria-btn:hover:not(.ativo) {
+      background-color: #45a049;
+    }
+    .categoria-btn.ativo {
+      background-color: #2e7d32;
+      box-shadow: 0 0 10px #2e7d32;
+    }
+    .produtos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 14px;
-      width: 100%;
-      align-items: center;
+      justify-items: center;
     }
     .card {
       background: white;
@@ -39,22 +46,18 @@
       padding: 15px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       text-align: center;
+      max-width: 200px;
+      width: 100%;
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 0;
-      width: 100%;
-      max-width: 200px;
-      margin: 0 auto;
-      box-sizing: border-box;
     }
     .card img {
-      width: auto;
       max-width: 120px;
       height: auto;
       border-radius: 12px;
-      margin: 0 auto 10px auto;
-      display: block;
+      margin-bottom: 10px;
     }
     .unidade-indicador {
       font-size: 0.97em;
@@ -69,6 +72,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      margin-top: auto;
     }
     .quantidade-container button {
       background-color: #4caf50;
@@ -85,60 +89,174 @@
       text-align: center;
       font-weight: bold;
     }
-    button { 
-      padding: 10px 15px; 
-      background: #4caf50; 
-      border: none; 
-      color: white; 
-      border-radius: 6px; 
-      cursor: pointer; 
+    button.adicionar-btn {
+      padding: 10px 15px;
+      background: #4caf50;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
       font-size: 15px;
+      margin-top: 10px;
+      transition: background-color 0.3s;
     }
-    #carrinho { 
-      background: white; 
-      padding: 20px; 
-      border-radius: 10px; 
-      margin-top: 30px; 
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-      overflow-x: auto;
+    button.adicionar-btn:hover:not(:disabled) {
+      background-color: #45a049;
     }
-    #whatsappBtn { margin-top: 20px; width: 100%; font-size: 22px;padding: 18px 10px; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 8px; font-size: 16px; }
-    td { border-bottom: 1px solid #ddd; }
+    button.adicionar-btn:disabled {
+      background-color: #2e7d32;
+      cursor: default;
+    }
+    #carrinho {
+      display: none;
+      position: fixed;
+      right: 10px;
+      bottom: 70px;
+      width: 90vw;
+      max-width: 360px;
+      max-height: 80vh;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      overflow-y: auto;
+      z-index: 1000;
+    }
+    #carrinho table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #carrinho th, #carrinho td {
+      padding: 8px;
+      font-size: 16px;
+      border-bottom: 1px solid #ddd;
+    }
+    #whatsappBtn {
+      margin-top: 20px;
+      width: 100%;
+      font-size: 18px;
+      padding: 15px 10px;
+      cursor: pointer;
+      border: none;
+      background-color: #4caf50;
+      color: white;
+      border-radius: 6px;
+    }
+    #botaoCarrinho {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      z-index: 1100;
+    }
+    #contadorBotaoCarrinho {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #e74c3c;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+      display: none;
+    }
+    #enderecoEntrega {
+      margin-top: 20px;
+      text-align: left;
+    }
+    #enderecoEntrega label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 4px;
+    }
+    #enderecoEntrega input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      box-sizing: border-box;
+      display: block;
+    }
+    #fecharCarrinhoBtn {
+      background: #e74c3c;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      float: right;
+      margin-bottom: 10px;
+    }
+    #contadorProdutos {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
     @media (max-width: 700px) {
       .container { max-width: 100%; padding: 8px; }
-      .categorias-grid {
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 4px;
+      .categoria-btn {
+        font-size: 16px;
+        padding: 12px 30px;
+        min-width: 90px;
       }
-      .produtos-col { gap: 6px; }
+      .produtos-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
       .card {
-        max-width: none;
-        min-width: 0;
-        padding: 7px 3px;
-        font-size: 1em;
-        box-sizing: border-box;
-        width: 100%;
-        margin: 0;
+        max-width: 100%;
       }
-      .titulo-categoria { font-size: 1em; }
+      #botaoCarrinho {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        top: 15px;
+        right: 15px;
+      }
+      #contadorBotaoCarrinho {
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        top: -4px;
+        right: -4px;
+      }
+      #carrinho {
+        width: 80vw;
+        max-width: none;
+        bottom: 65px;
+        right: 5px;
+        max-height: 70vh;
+        padding: 15px;
+      }
     }
     @media (max-width: 520px) {
-      .container { padding: 3px; }
-      .categorias-grid {
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 2px;
+      .categoria-btn {
+        padding: 10px 25px;
+        font-size: 16px;
+        min-width: 90px;
+      }
+      .produtos-grid {
+        grid-template-columns: repeat(3, 1fr);
       }
       .card {
-        padding: 6px 1px;
-        font-size: 0.94em;
-        box-sizing: border-box;
-        width: 100%;
-        margin: 0;
+        max-width: 100%;
       }
-      .titulo-categoria { font-size: 0.98em; }
-      th, td { padding: 5px; font-size: 13px; }
     }
   </style>
 </head>
@@ -147,37 +265,48 @@
   <img src="Bom_Pastor_HORTIFRUTI.png" alt="Logo do Bom Pastor Hortifruti" style="max-width:220px; width:100%; display:block; margin:0 auto 10px auto; border-radius:12px;">
 </header>
 <div class="container">
-  <h2>Produtos</h2>
-  <input type="text" id="barraPesquisa" placeholder=" Buscar produto..." style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box;">
-  <div class="categorias-grid">
-    <div class="categoria">
-      <div class="titulo-categoria">Legumes</div>
-      <div class="produtos-col" id="catLegumes"></div>
-    </div>
-    <div class="categoria">
-      <div class="titulo-categoria">Vegetais</div>
-      <div class="produtos-col" id="catVegetais"></div>
-    </div>
-    <div class="categoria">
-      <div class="titulo-categoria">Frutas</div>
-      <div class="produtos-col" id="catFrutas"></div>
-    </div>
+
+  <div class="categorias-botoes">
+    <button class="categoria-btn ativo" data-categoria="legumes">Legumes</button>
+    <button class="categoria-btn" data-categoria="vegetais">Vegetais</button>
+    <button class="categoria-btn" data-categoria="frutas">Frutas</button>
   </div>
-  <div id="carrinho">
-    <h2>Carrinho</h2>
-    <table id="listaCarrinho">
-      <thead>
-        <tr>
-          <th style="text-align:left;">Item</th>
-          <th style="text-align:center;">Quantidade</th>
-          <th style="text-align:center;">Ação</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <button id="whatsappBtn">Enviar pedido para o WhatsApp</button>
-  </div>
+
+  <div class="produtos-grid" id="produtosGrid"></div>
 </div>
+
+<!-- Botão fixo para abrir o carrinho -->
+<button id="botaoCarrinho" title="Ver carrinho">🛒
+  <div id="contadorBotaoCarrinho">0</div>
+</button>
+
+<!-- Painel do carrinho oculto inicialmente -->
+<div id="carrinho" aria-hidden="true" aria-label="Carrinho de compras">
+  <button id="fecharCarrinhoBtn" aria-label="Fechar carrinho">X</button>
+  <h2>Carrinho</h2>
+  <div id="contadorProdutos">Itens no carrinho: 0</div>
+  <table id="listaCarrinho">
+    <thead>
+      <tr>
+        <th style="text-align:left;">Item</th>
+        <th style="text-align:center;">Quantidade</th>
+        <th style="text-align:center;">Ação</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <div id="enderecoEntrega">
+    <h3>Endereço de Entrega</h3>
+    <label for="inputEndereco">Endereço:</label>
+    <input type="text" id="inputEndereco" placeholder="Rua, avenida, etc.">
+    <label for="inputNumero">Número:</label>
+    <input type="text" id="inputNumero" placeholder="Número">
+    <label for="inputBairro">Bairro:</label>
+    <input type="text" id="inputBairro" placeholder="Bairro">
+  </div>
+  <button id="whatsappBtn">Enviar pedido para o WhatsApp</button>
+</div>
+
 <footer style="text-align: center; padding: 20px 0;">
   <img src="logo-empresa.png" alt="Logo da empresa" style="max-width:100px; width:60%; border-radius:8px; display: block; margin: 0 auto 10px auto;">
   <div style="font-size: 14px; color: #555;">
@@ -199,50 +328,57 @@ const produtos = [
   { nome: "Melancia", preco: 9.90, imagem: "melancia.jpg", categoria: "frutas", vendidoPorPeso: true, unidade: "kg" }
 ];
 
-const listaCarrinho = document.getElementById('listaCarrinho');
+const produtosGrid = document.getElementById('produtosGrid');
+const listaCarrinho = document.querySelector('#listaCarrinho tbody');
 const whatsappBtn = document.getElementById('whatsappBtn');
-const barraPesquisa = document.getElementById('barraPesquisa');
+const botaoCarrinho = document.getElementById('botaoCarrinho');
+const carrinhoDiv = document.getElementById('carrinho');
+const fecharCarrinhoBtn = document.getElementById('fecharCarrinhoBtn');
+const contadorProdutos = document.getElementById('contadorProdutos');
+const contadorBotaoCarrinho = document.getElementById('contadorBotaoCarrinho');
+const categoriasBotoes = document.querySelectorAll('.categoria-btn');
+
 let carrinho = {};
+let categoriaSelecionada = 'legumes';
+renderProdutos();
 
 function renderProdutos() {
-  let legumesProd = [];
-  let vegetaisProd = [];
-  let frutasProd = [];
-  const termoPesquisa = barraPesquisa.value.toLowerCase();
-  produtos
-    .map((p, index) => ({ ...p, originalIndex: index }))
-    .filter(p => p.nome.toLowerCase().includes(termoPesquisa))
-    .forEach((p) => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <img loading="lazy" src="${p.imagem}" alt="${p.nome}" />
-        <h3>${p.nome}</h3>
-        <span class="unidade-indicador">${p.unidade ? p.unidade : ''}</span>
-        <button onclick="addCarrinho(${p.originalIndex})">Adicionar</button>
-      `;
-      if (p.categoria === "legumes") legumesProd.push(card);
-      if (p.categoria === "vegetais") vegetaisProd.push(card);
-      if (p.categoria === "frutas") frutasProd.push(card);
-    });
-  const catLegumes = document.getElementById('catLegumes');
-  const catVegetais = document.getElementById('catVegetais');
-  const catFrutas = document.getElementById('catFrutas');
-  catLegumes.innerHTML = '';
-  catVegetais.innerHTML = '';
-  catFrutas.innerHTML = '';
-  legumesProd.forEach(e => catLegumes.appendChild(e));
-  vegetaisProd.forEach(e => catVegetais.appendChild(e));
-  frutasProd.forEach(e => catFrutas.appendChild(e));
+  produtosGrid.innerHTML = '';
+  const produtosFiltrados = produtos.filter(p => p.categoria === categoriaSelecionada);
+  produtosFiltrados.forEach((p, index) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${p.imagem}" alt="${p.nome}" loading="lazy" />
+      <h3>${p.nome}</h3>
+      <span class="unidade-indicador">${p.unidade}</span>
+      <button class="adicionar-btn" id="btn-add-${index}">Adicionar</button>
+    `;
+    produtosGrid.appendChild(card);
+
+    const botaoAdicionar = card.querySelector('button');
+    botaoAdicionar.addEventListener('click', () => addCarrinhoComFeedback(p, botaoAdicionar));
+  });
 }
 
-function addCarrinho(index) {
-  const produto = produtos[index];
-  const nomeBusca = produto.nome;
-  if (carrinho[nomeBusca]) {
-    carrinho[nomeBusca].quantidade++;
+function addCarrinhoComFeedback(produto, botao) {
+  adicionarProdutoNoCarrinho(produto);
+  botao.disabled = true;
+  const textoOriginal = botao.textContent;
+  botao.textContent = 'Adicionado ✔';
+  botao.style.backgroundColor = '#2e7d32';
+  setTimeout(() => {
+    botao.textContent = textoOriginal;
+    botao.style.backgroundColor = '#4caf50';
+    botao.disabled = false;
+  }, 1500);
+}
+
+function adicionarProdutoNoCarrinho(produto) {
+  if (carrinho[produto.nome]) {
+    carrinho[produto.nome].quantidade++;
   } else {
-    carrinho[nomeBusca] = { ...produto, quantidade: 1 };
+    carrinho[produto.nome] = { ...produto, quantidade: 1 };
   }
   atualizarCarrinho();
 }
@@ -265,13 +401,13 @@ function removerItem(nome) {
 }
 
 function atualizarCarrinho() {
-  const tabela = document.querySelector('#listaCarrinho tbody');
-  tabela.innerHTML = '';
-  Object.values(carrinho).forEach((item) => {
-    const nomeExibicao = `${item.nome} (${item.unidade || ''})`;
+  listaCarrinho.innerHTML = '';
+  let totalItens = 0;
+  Object.values(carrinho).forEach(item => {
+    totalItens += item.quantidade;
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${nomeExibicao}</td>
+      <td>${item.nome} (${item.unidade})</td>
       <td>
         <div class="quantidade-container">
           <button onclick="alterarQuantidade('${item.nome}', -1)">−</button>
@@ -280,24 +416,62 @@ function atualizarCarrinho() {
         </div>
       </td>
       <td>
-        <button onclick="removerItem('${item.nome}')" style='padding:5px 8px;font-size:12px;background:#e74c3c;color:white;border:none;border-radius:5px;cursor:pointer;'>X</button>
+        <button onclick="removerItem('${item.nome}')" style="padding:5px 8px;font-size:12px;background:#e74c3c;color:white;border:none;border-radius:5px;cursor:pointer;">X</button>
       </td>
     `;
-    tabela.appendChild(tr);
+    listaCarrinho.appendChild(tr);
   });
+  contadorProdutos.textContent = `Itens no carrinho: ${totalItens}`;
+  contadorBotaoCarrinho.textContent = totalItens;
+  contadorBotaoCarrinho.style.display = totalItens > 0 ? 'flex' : 'none';
 }
+
+categoriasBotoes.forEach(botao => {
+  botao.addEventListener('click', () => {
+    categoriasBotoes.forEach(b => b.classList.remove('ativo'));
+    botao.classList.add('ativo');
+    categoriaSelecionada = botao.dataset.categoria;
+    renderProdutos();
+  });
+});
+
+botaoCarrinho.addEventListener('click', () => {
+  if (carrinhoDiv.style.display === 'none' || !carrinhoDiv.style.display) {
+    carrinhoDiv.style.display = 'block';
+    carrinhoDiv.setAttribute('aria-hidden', 'false');
+  } else {
+    carrinhoDiv.style.display = 'none';
+    carrinhoDiv.setAttribute('aria-hidden', 'true');
+  }
+});
+
+fecharCarrinhoBtn.addEventListener('click', () => {
+  carrinhoDiv.style.display = 'none';
+  carrinhoDiv.setAttribute('aria-hidden', 'true');
+});
 
 whatsappBtn.addEventListener('click', () => {
   if (Object.keys(carrinho).length === 0) {
     alert('Carrinho está vazio!');
     return;
   }
+  const endereco = document.getElementById('inputEndereco').value.trim();
+  const numero = document.getElementById('inputNumero').value.trim();
+  const bairro = document.getElementById('inputBairro').value.trim();
+
+  if (!endereco || !numero || !bairro) {
+    alert('Por favor, preencha o endereço, número e bairro para entrega.');
+    return;
+  }
+
   let mensagem = 'Olá, gostaria de fazer um pedido:\n\n';
-  Object.values(carrinho).forEach((item) => {
-    mensagem += `- ${item.nome} (${item.unidade || ''}) (x${item.quantidade})\n`;
+  Object.values(carrinho).forEach(item => {
+    mensagem += `- ${item.nome} (${item.unidade}) (x${item.quantidade})\n`;
   });
-  const numero = '5522992391075';
-  const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+  mensagem += `\nEndereço de entrega:\nRua/Avenida: ${endereco}\nNúmero: ${numero}\nBairro: ${bairro}`;
+
+  const phoneNumber = '5522992905633';
+  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(mensagem)}`;
   window.open(url, '_blank');
 });
 
