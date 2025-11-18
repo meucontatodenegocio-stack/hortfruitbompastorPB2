@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bom Pastor HORTIFRUTI - Mobile</title>
+  <title>Bom Pastor HORTIFRUTI</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f3f3; }
     header { background: #4caf50; padding: 20px; text-align: center; }
@@ -12,39 +12,44 @@
       display: flex;
       justify-content: center;
       gap: 8px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       flex-wrap: nowrap;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
-    .categorias-botoes::-webkit-scrollbar {
-      display: none;
-    }
+    .categorias-botoes::-webkit-scrollbar { display: none; }
     .categoria-btn {
       flex: 0 0 auto;
       background: #4caf50;
       color: white;
       border: none;
-      padding: 10px 21px;
-      font-size: 18px;
-      border-radius: 7px;
+      padding: 8px 20px;
+      font-size: 14px;
+      border-radius: 30px;
       cursor: pointer;
       white-space: nowrap;
       transition: background-color 0.3s;
-      min-width: 100px;
+      min-width: 80px;
       user-select: none;
     }
-    .categoria-btn:hover:not(.ativo) {
-      background-color: #45a049;
-    }
+    .categoria-btn:hover:not(.ativo) { background-color: #45a049; }
     .categoria-btn.ativo {
       background-color: #2e7d32;
       box-shadow: 0 0 10px #2e7d32;
     }
+    #barraPesquisa {
+      width: 100%;
+      padding: 8px 12px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
     .produtos-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 3px;
+      gap: 10px;
       justify-items: center;
     }
     .card {
@@ -84,14 +89,10 @@
       font-size: 14px;
       transition: background-color 0.3s;
       user-select: none;
+      margin-top: 6px;
     }
-    button.adicionar-btn:hover:not(:disabled) {
-      background-color: #45a049;
-    }
-    button.adicionar-btn:disabled {
-      background-color: #2e7d32;
-      cursor: default;
-    }
+    button.adicionar-btn:hover:not(:disabled) { background-color: #45a049; }
+    button.adicionar-btn:disabled { background-color: #2e7d32; cursor: default; }
     /* Carrinho */
     #carrinho {
       display: none;
@@ -214,6 +215,8 @@
     <button class="categoria-btn" data-categoria="frutas">Frutas</button>
   </div>
 
+  <input type="text" id="barraPesquisa" placeholder="Buscar produto..." autocomplete="off">
+
   <div class="produtos-grid" id="produtosGrid"></div>
 </div>
 
@@ -238,23 +241,24 @@
     <tbody></tbody>
   </table>
   <div id="enderecoEntrega">
-  <h3>Endereço de Entrega</h3>
-  <label for="inputNome">Nome:</label>
-  <input type="text" id="inputNome" placeholder="Nome completo">
-  <label for="inputTelefone">Telefone:</label>
-  <input type="text" id="inputTelefone" placeholder="(XX) XXXXX-XXXX">
-  <label for="inputEndereco">Endereço:</label>
-  <input type="text" id="inputEndereco" placeholder="Rua, avenida, etc.">
-  <label for="inputNumero">Número:</label>
-  <input type="text" id="inputNumero" placeholder="Número">
-  <label for="inputBairro">Bairro:</label>
-  <input type="text" id="inputBairro" placeholder="Bairro">
-</div>
+    <h3>Endereço de Entrega</h3>
+    <label for="inputNome">Nome:</label>
+    <input type="text" id="inputNome" placeholder="Nome completo">
+    <label for="inputTelefone">Telefone:</label>
+    <input type="text" id="inputTelefone" placeholder="(XX) XXXXX-XXXX">
+    <label for="inputEndereco">Endereço:</label>
+    <label for="inputEndereco">Endereço:</label>
+    <input type="text" id="inputEndereco" placeholder="Rua, avenida, etc.">
+    <label for="inputNumero">Número:</label>
+    <input type="text" id="inputNumero" placeholder="Número">
+    <label for="inputBairro">Bairro:</label>
+    <input type="text" id="inputBairro" placeholder="Bairro">
+  </div>
   <button id="whatsappBtn">Enviar pedido para o WhatsApp</button>
 </div>
 
 <footer style="text-align: center; padding: 15px 0; font-size: 12px; color: #555;">
-  <img src="logo-empresa.png" alt="Logo" style="max-height: 30px; display: block; margin: 0 auto 10px auto;">
+  <img src="logo-empresa.png" alt="Logo" style="max-height: 25px; display: block; margin: 0 auto 10px auto;">
   <div>
     Criado por ImpactUP 
   </div>
@@ -287,13 +291,15 @@ const fecharCarrinhoBtn = document.getElementById('fecharCarrinhoBtn');
 const contadorProdutos = document.getElementById('contadorProdutos');
 const contadorBotaoCarrinho = document.getElementById('contadorBotaoCarrinho');
 const categoriasBotoes = document.querySelectorAll('.categoria-btn');
+const barraPesquisa = document.getElementById('barraPesquisa');
 
 let carrinho = {};
 let categoriaSelecionada = 'legumes';
-renderProdutos();
+let termoPesquisa = '';
+
 function renderProdutos() {
   produtosGrid.innerHTML = '';
-  const produtosFiltrados = produtos.filter(p => p.categoria === categoriaSelecionada);
+  const produtosFiltrados = produtos.filter(p => p.categoria === categoriaSelecionada && p.nome.toLowerCase().includes(termoPesquisa.toLowerCase()));
   produtosFiltrados.forEach((p, index) => {
     const card = document.createElement('div');
     card.className = 'card';
@@ -380,8 +386,15 @@ categoriasBotoes.forEach(botao => {
     categoriasBotoes.forEach(b => b.classList.remove('ativo'));
     botao.classList.add('ativo');
     categoriaSelecionada = botao.dataset.categoria;
+    termoPesquisa = '';
+    barraPesquisa.value = '';
     renderProdutos();
   });
+});
+
+barraPesquisa.addEventListener('input', () => {
+  termoPesquisa = barraPesquisa.value;
+  renderProdutos();
 });
 
 botaoCarrinho.addEventListener('click', () => {
@@ -410,10 +423,10 @@ whatsappBtn.addEventListener('click', () => {
   const numero = document.getElementById('inputNumero').value.trim();
   const bairro = document.getElementById('inputBairro').value.trim();
 
-  if (!telefone ||!nome || !endereco || !numero || !bairro) {
-  alert('Por favor, preencha o nome, telefone, endereço, número e bairro para entrega.');
-  return;
-}
+  if (!endereco || !numero || !bairro) {
+    alert('Por favor, preencha o endereço, número e bairro para entrega.');
+    return;
+  }
 
   let mensagem = 'Olá, gostaria de fazer um pedido:\n\n';
   Object.values(carrinho).forEach(item => {
@@ -426,7 +439,7 @@ whatsappBtn.addEventListener('click', () => {
   window.open(url, '_blank');
 });
 
-barraPesquisa.addEventListener('input', renderProdutos);
+// Inicializa com produtos da categoria legumes
 renderProdutos();
 </script>
 </body>
